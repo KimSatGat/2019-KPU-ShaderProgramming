@@ -21,7 +21,9 @@ public:
 	GLuint CreateBmpTexture(char * filePath);
 	   
 	void Test();
-
+	void Lecture2();
+	void GenQuads(int n);
+	void DrawQuads();
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
 	bool ReadFile(char* filename, std::string *target);
@@ -37,5 +39,13 @@ private:
 
 	GLuint m_VBORect = 0;
 	GLuint m_SolidRectShader = 0;
+
+	//add my code
+	float* m_Array;
+	int m_size;
+	unsigned int m_num = 0;	
+	GLuint m_VBOLecture2 = 0;
+	
+
 };
 

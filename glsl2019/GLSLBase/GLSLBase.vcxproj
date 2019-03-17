@@ -156,6 +156,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GLSLBase.h" />
     <ClInclude Include="LoadPng.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="stdafx.h" />

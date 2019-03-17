@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <cassert>
 
+
+
 Renderer::Renderer(int windowSizeX, int windowSizeY)
 {
 	Initialize(windowSizeX, windowSizeY);
@@ -30,16 +32,31 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 
 void Renderer::CreateVertexBufferObjects()
 {
+	/*
 	float rect[]
 		=
 	{
-		-0.5, -0.5, 0.f, -0.5, 0.5, 0.f, 0.5, 0.5, 0.f, //Triangle1
-		-0.5, -0.5, 0.f,  0.5, 0.5, 0.f, 0.5, -0.5, 0.f, //Triangle2
+		-0.5, -0.5, 0.f, -0.5, 0.5, 0.f, 0.5, 0.5, 0.f, //Triangle1 버텍스 3개
+		-0.5, -0.5, 0.f,  0.5, 0.5, 0.f, 0.5, -0.5, 0.f, //Triangle2 버텍스 3개
 	};
 
-	glGenBuffers(1, &m_VBORect);
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBORect);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(rect), rect, GL_STATIC_DRAW);
+	glGenBuffers(1, &m_VBORect);			// id를 지정
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBORect);	// GL_ARRAY_BUFFER 라는 작업대로 이동
+	glBufferData(GL_ARRAY_BUFFER, sizeof(rect), rect, GL_STATIC_DRAW);		// 작업대에서 내가 원하는 데이터를 넘겨준다 -> VBORect에 내가 원하는 정보가 있게된다
+
+	//lecture2
+		
+	float triangleVertex[]
+		=
+	{
+		-1.0, 0.f, 0.f, 0.f, 1.0, 0.f, 1.0, 0.f, 0.f, // 9 floats		
+	};
+
+	glGenBuffers(1, &m_VBOLecture2);	// 개수 하나, 이름 지정 
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture2);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertex), triangleVertex, GL_STATIC_DRAW);
+	*/
+	GenQuads(100);
 }
 
 void Renderer::AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum ShaderType)
@@ -274,9 +291,83 @@ void Renderer::Test()
 	int attribPosition = glGetAttribLocation(m_SolidRectShader, "a_Position");
 	glEnableVertexAttribArray(attribPosition);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBORect);
-	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+	glVertexAttribPointer(attribPosition, 3 /*세개씩 끊어서 하나의 버텍스를 구성해라!*/, GL_FLOAT, GL_FALSE, sizeof(float) * 3 /*다음 위치를 알려주는곳 (영어로는 stride)*/, 0);	
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glDisableVertexAttribArray(attribPosition);
+}
+
+void Renderer::Lecture2()
+{
+	glUseProgram(m_SolidRectShader);
+	glEnableVertexAttribArray(0);		// 나중에 설명함  -> 0번지를 enable
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture2);
+	glVertexAttribPointer(0, 3 /*세개씩 끊어서 하나의 버텍스를 구성해라!*/, GL_FLOAT, GL_FALSE, sizeof(float) * 3 /*다음 위치를 알려주는곳 (영어로는 stride)*/, 0);
+	
+	glDrawArrays(GL_TRIANGLES, 0, 3);	// 트라이앵글 형태, , 버텍스 3개
+
+	glDisableVertexAttribArray(0);	// 0번지 disable
+}
+
+void Renderer::GenQuads(int n)
+{
+	float offset = 0.01f;	// 반지름
+	float centerX, centerY;
+	int count = 0;
+
+	m_num = n * 6;		// 버텍스 개수
+	m_size = n * 6 * 3;	// 원소 개수	
+	m_Array = new float[m_size];	// 배열 생성	
+
+	srand(GetTickCount());
+
+	for (int i = 0; i < n; i++)
+	{
+		centerX = ((float)rand() / RAND_MAX ) * 2 - 1;	// 중심점 생성 -1 ~ 1
+		centerY = ((float)rand() / RAND_MAX) * 2 - 1;	// 중심점 생성 -1 ~ 1
+
+		// Ver1
+		m_Array[count++] = centerX - offset;	// x
+		m_Array[count++] = centerY + offset;	// y
+		m_Array[count++] = 0;				// z
+		// Ver2
+		m_Array[count++] = centerX + offset;
+		m_Array[count++] = centerY + offset;
+		m_Array[count++] = 0;
+		// Ver3
+		m_Array[count++] = centerX - offset;
+		m_Array[count++] = centerY - offset;
+		m_Array[count++] = 0;
+		// Ver4
+		m_Array[count++] = centerX + offset;
+		m_Array[count++] = centerY + offset;
+		m_Array[count++] = 0;
+		// Ver5
+		m_Array[count++] = centerX - offset;
+		m_Array[count++] = centerY - offset;
+		m_Array[count++] = 0;
+		// Ver6
+		m_Array[count++] = centerX + offset;
+		m_Array[count++] = centerY - offset;
+		m_Array[count++] = 0;
+	}
+	
+
+	glGenBuffers(1, &m_VBOLecture2);	// 개수 하나, 이름 지정
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture2);
+	glBufferData(GL_ARRAY_BUFFER, m_size * sizeof(float), m_Array, GL_STATIC_DRAW);	
+	
+}
+
+void Renderer::DrawQuads()
+{
+	glUseProgram(m_SolidRectShader);
+	glEnableVertexAttribArray(0);		// 나중에 설명함  -> 0번지를 enable
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture2);
+	glVertexAttribPointer(0, 3 /*세개씩 끊어서 하나의 버텍스를 구성해라!*/, GL_FLOAT, GL_FALSE, sizeof(float) * 3 /*다음 위치를 알려주는곳 (영어로는 stride)*/, 0);
+
+	glDrawArrays(GL_TRIANGLES, 0, m_num);	// 삼각형타입, ???, 그려야할 버텍스 개수	
+
+	glDisableVertexAttribArray(0);	// 0번지 disable
 }

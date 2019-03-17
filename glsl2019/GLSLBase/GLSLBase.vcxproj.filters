@@ -27,6 +27,7 @@
     <ClInclude Include="LoadPng.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="GLSLBase.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\SolidRect.vs">

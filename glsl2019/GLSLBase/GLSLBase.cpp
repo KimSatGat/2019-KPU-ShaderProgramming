@@ -26,9 +26,11 @@ void RenderScene(void)
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Renderer Test
-	g_Renderer->Test();
+	//g_Renderer->Test();	// 여기서 렌더링
+	//g_Renderer->Lecture2();	
+	g_Renderer->DrawQuads();
 
-	glutSwapBuffers();
+	glutSwapBuffers();	// 더블버퍼링을 위해서 버퍼 스왑
 }
 
 void Idle(void)
