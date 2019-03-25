@@ -23,6 +23,7 @@ public:
 	void Test();
 	void Lecture2();
 	void Lecture3();
+	void Lecture4();
 	void GenQuads(int n);
 	void DrawQuads();
 	void CreateGridMesh();
@@ -40,8 +41,7 @@ private:
 	unsigned int m_WindowSizeY = 0;
 
 	GLuint m_VBORect = 0;
-	GLuint m_VBORectColor = 0;
-	GLuint m_SolidRectShader = 0;
+	GLuint m_VBORectColor = 0;	
 
 	//add my code
 	float* m_Array;
@@ -52,5 +52,8 @@ private:
 	GLuint m_VBOGridMesh = 0;
 	int m_VBOGridMesh_Count = 0;
 
+	//Shaders
+	GLuint m_SolidRectShader = 0;
+	GLuint m_SimpleVelShader = 0;
 };
 

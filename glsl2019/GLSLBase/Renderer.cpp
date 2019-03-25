@@ -25,6 +25,7 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 
 	//Load shaders
 	m_SolidRectShader = CompileShaders("./Shaders/SolidRect.vs", "./Shaders/SolidRect.fs");
+	m_SimpleVelShader = CompileShaders("./Shaders/SimpleVel.vs", "./Shaders/SimpleVel.fs");
 	
 	//Create VBOs
 	CreateVertexBufferObjects();
@@ -357,42 +358,84 @@ void Renderer::GenQuads(int n)
 	float offset = 0.01f;	// 반지름
 	float centerX, centerY;
 	int count = 0;
-
-	m_num = n * 6;		// 버텍스 개수
-	m_size = n * 6 * 3;	// 원소 개수	
+	
+	m_num = n * 6;					// 버텍스 개수
+	m_size = n * 6 * 6;				// 원소 개수	
 	m_Array = new float[m_size];	// 배열 생성	
 
 	srand(GetTickCount());
 
 	for (int i = 0; i < n; i++)
 	{
-		centerX = ((float)rand() / RAND_MAX ) * 2 - 1;	// 중심점 생성 -1 ~ 1
-		centerY = ((float)rand() / RAND_MAX) * 2 - 1;	// 중심점 생성 -1 ~ 1
+		float ranx, rany, ranz;
+		float ranVelx, ranVely, ranVelz;
+
+		centerX = ((float)rand() / RAND_MAX ) * 2 - 0.5f;	// 중심점 생성 -1 ~ 1
+		centerY = ((float)rand() / RAND_MAX) * 2 - 0.5f;	// 중심점 생성 -1 ~ 1		
+
+		ranVelx = ((float)rand() / RAND_MAX) * 2 - 0.5f;
+		ranVely = ((float)rand() / RAND_MAX) * 2 - 0.5f;
+		ranVelz =0.f;
 
 		// Ver1
 		m_Array[count++] = centerX - offset;	// x
 		m_Array[count++] = centerY + offset;	// y
 		m_Array[count++] = 0;					// z
+		
+		// Ver1의 방향벡터   --> 같은 도형이므로 방향벡터를 같게 넣어야한다.
+		m_Array[count++] = ranVelx;	// x
+		m_Array[count++] = ranVely;	// y
+		m_Array[count++] = ranVelz;	// z
+
 		// Ver2
 		m_Array[count++] = centerX + offset;
 		m_Array[count++] = centerY + offset;
 		m_Array[count++] = 0;
+
+		// Ver1의 방향벡터
+		m_Array[count++] = ranVelx;	// x
+		m_Array[count++] = ranVely;	// y
+		m_Array[count++] = ranVelz;	// z
+
 		// Ver3
 		m_Array[count++] = centerX - offset;
 		m_Array[count++] = centerY - offset;
 		m_Array[count++] = 0;
+
+		// Ver1의 방향벡터
+		m_Array[count++] = ranVelx;	// x
+		m_Array[count++] = ranVely;	// y
+		m_Array[count++] = ranVelz;	// z
+
 		// Ver4
 		m_Array[count++] = centerX + offset;
 		m_Array[count++] = centerY + offset;
 		m_Array[count++] = 0;
+
+		// Ver1의 방향벡터
+		m_Array[count++] = ranVelx;	// x
+		m_Array[count++] = ranVely;	// y
+		m_Array[count++] = ranVelz;	// z
+
 		// Ver5
 		m_Array[count++] = centerX - offset;
 		m_Array[count++] = centerY - offset;
 		m_Array[count++] = 0;
+
+		// Ver1의 방향벡터
+		m_Array[count++] = ranVelx;	// x
+		m_Array[count++] = ranVely;	// y
+		m_Array[count++] = ranVelz;	// z
+
 		// Ver6
 		m_Array[count++] = centerX + offset;
 		m_Array[count++] = centerY - offset;
 		m_Array[count++] = 0;
+
+		// Ver1의 방향벡터
+		m_Array[count++] = ranVelx;	// x
+		m_Array[count++] = ranVely;	// y
+		m_Array[count++] = ranVelz;	// z
 	}
 	
 
@@ -504,4 +547,30 @@ void Renderer::Lecture3()
 	glDrawArrays(GL_LINE_STRIP, 0, m_VBOGridMesh_Count);	// 트라이앵글 형태, , 그려야할 버텍스 개수
 
 	glDisableVertexAttribArray(0);	// 0번지 disable
+}
+
+void Renderer::Lecture4()
+{
+	glUseProgram(m_SimpleVelShader);
+
+	GLuint uTime = glGetUniformLocation(m_SimpleVelShader, "u_Time");
+	glUniform1f(uTime, offsetTime);
+	offsetTime += 0.001f;
+
+	GLuint aPos = glGetAttribLocation(m_SimpleVelShader, "a_Position");
+	GLuint aVel = glGetAttribLocation(m_SimpleVelShader, "a_Vel");
+
+	glEnableVertexAttribArray(aPos);
+	glEnableVertexAttribArray(aVel);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture2);
+
+	glVertexAttribPointer(aPos, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, 0);
+	glVertexAttribPointer(aVel, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6
+		, (GLvoid*)(sizeof(float) * 3)/*float 크기만큼 3만큼 뒤로 밀어라*/);
+
+	glDrawArrays(GL_TRIANGLES, 0, m_num);	// 삼각형타입, ???, 그려야할 버텍스 개수	
+
+	glDisableVertexAttribArray(aPos);	// 0번지 disable
+	glDisableVertexAttribArray(aVel);
 }
