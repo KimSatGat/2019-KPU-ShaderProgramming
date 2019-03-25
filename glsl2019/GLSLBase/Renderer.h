@@ -22,8 +22,10 @@ public:
 	   
 	void Test();
 	void Lecture2();
+	void Lecture3();
 	void GenQuads(int n);
 	void DrawQuads();
+	void CreateGridMesh();
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
 	bool ReadFile(char* filename, std::string *target);
@@ -38,6 +40,7 @@ private:
 	unsigned int m_WindowSizeY = 0;
 
 	GLuint m_VBORect = 0;
+	GLuint m_VBORectColor = 0;
 	GLuint m_SolidRectShader = 0;
 
 	//add my code
@@ -46,6 +49,8 @@ private:
 	unsigned int m_num = 0;	
 	GLuint m_VBOLecture2 = 0;
 	
+	GLuint m_VBOGridMesh = 0;
+	int m_VBOGridMesh_Count = 0;
 
 };
 

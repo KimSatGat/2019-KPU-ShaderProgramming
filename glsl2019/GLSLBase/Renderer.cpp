@@ -33,19 +33,39 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 void Renderer::CreateVertexBufferObjects()
 {
 	/*
+	float size = 0.02f;
 	float rect[]
 		=
 	{
-		-0.5, -0.5, 0.f, -0.5, 0.5, 0.f, 0.5, 0.5, 0.f, //Triangle1 버텍스 3개
-		-0.5, -0.5, 0.f,  0.5, 0.5, 0.f, 0.5, -0.5, 0.f, //Triangle2 버텍스 3개
+		-size, -size, 0.f, 0.5,	// x, y, z, value
+		-size, size, 0.f, 0.5,
+		size, size, 0.f, 0.5, //Triangle1 버텍스 3개
+		-size, -size, 0.f, 0.5,
+		size, size, 0.f, 0.5,
+		size, -size, 0.f, 0.5 //Triangle2 버텍스 3개
 	};
 
 	glGenBuffers(1, &m_VBORect);			// id를 지정
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBORect);	// GL_ARRAY_BUFFER 라는 작업대로 이동
 	glBufferData(GL_ARRAY_BUFFER, sizeof(rect), rect, GL_STATIC_DRAW);		// 작업대에서 내가 원하는 데이터를 넘겨준다 -> VBORect에 내가 원하는 정보가 있게된다
 
+	float color[]
+		=
+	{
+		1, 0, 0.f, 1,	// r, g, b, a
+		1, 0, 0.f, 1,
+		1, 0, 0.f, 1, 
+		1, 0, 0.f, 1,
+		1, 0, 0.f, 1,
+		1, 0, 0.f, 1
+	};
+
+	glGenBuffers(1, &m_VBORectColor);			// id를 지정
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBORectColor);	// GL_ARRAY_BUFFER 라는 작업대로 이동
+	glBufferData(GL_ARRAY_BUFFER, sizeof(color), color, GL_STATIC_DRAW);		// 작업대에서 내가 원하는 데이터를 넘겨준다 -> VBORect에 내가 원하는 정보가 있게된다
+
 	//lecture2
-		
+	
 	float triangleVertex[]
 		=
 	{
@@ -56,7 +76,9 @@ void Renderer::CreateVertexBufferObjects()
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture2);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertex), triangleVertex, GL_STATIC_DRAW);
 	*/
-	GenQuads(100);
+
+	GenQuads(1000);
+	//CreateGridMesh();
 }
 
 void Renderer::AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum ShaderType)
@@ -284,18 +306,37 @@ GLuint Renderer::CreateBmpTexture(char * filePath)
 	return temp;
 }
 
+float offsetTime = 0;
+float offsetTheta = 0;
 void Renderer::Test()
 {
-	glUseProgram(m_SolidRectShader);
+	glUseProgram(m_SolidRectShader);	// m_SolidRectShader 쉐이더를 쓰겠다.
 
-	int attribPosition = glGetAttribLocation(m_SolidRectShader, "a_Position");
-	glEnableVertexAttribArray(attribPosition);
+	GLuint uTime = glGetUniformLocation(m_SolidRectShader, "u_Time");
+	GLuint uTheta = glGetUniformLocation(m_SolidRectShader, "u_Theta");
+	
+	offsetTheta += 0.001f;
+	offsetTime += 0.0001f;
+	
+	glUniform1f(uTheta, offsetTheta);
+	//glUniform1f(uTime, offsetTime);			//glUniform1f float값 하나 넣겠다 uTime에 의해 u_Time이 매프레임 마다 offset값이 됨.
+
+	int attribPosition = glGetAttribLocation(m_SolidRectShader, "a_Position");	
+	int attribColor = glGetAttribLocation(m_SolidRectShader, "a_Color");
+
+	glEnableVertexAttribArray(attribPosition);	// 0 번으로 로케이션이 있는 어트리뷰트를 enable 하겠다. SolidRect.vs의 a_Position이 사용가능하게 됨.
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBORect);
-	glVertexAttribPointer(attribPosition, 3 /*세개씩 끊어서 하나의 버텍스를 구성해라!*/, GL_FLOAT, GL_FALSE, sizeof(float) * 3 /*다음 위치를 알려주는곳 (영어로는 stride)*/, 0);	
+	glVertexAttribPointer(attribPosition, 4 /*세개씩 끊어서 하나의 버텍스를 구성해라!*/, GL_FLOAT, GL_FALSE, sizeof(float) * 4 /*다음 위치를 알려주는곳 (영어로는 stride)*/, 0);
+	// 3개씩 읽은 float 값을 SolidRect.vs의 a_Position에 값이 전달 된다.
+
+	glEnableVertexAttribArray(attribColor);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBORectColor);
+	glVertexAttribPointer(attribColor, 4 /*세개씩 끊어서 하나의 버텍스를 구성해라!*/, GL_FLOAT, GL_FALSE, sizeof(float) * 4 /*다음 위치를 알려주는곳 (영어로는 stride)*/, 0);
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
-
+	
 	glDisableVertexAttribArray(attribPosition);
+	glDisableVertexAttribArray(attribColor);
 }
 
 void Renderer::Lecture2()
@@ -310,6 +351,7 @@ void Renderer::Lecture2()
 	glDisableVertexAttribArray(0);	// 0번지 disable
 }
 
+// 버텍스 생성
 void Renderer::GenQuads(int n)
 {
 	float offset = 0.01f;	// 반지름
@@ -330,7 +372,7 @@ void Renderer::GenQuads(int n)
 		// Ver1
 		m_Array[count++] = centerX - offset;	// x
 		m_Array[count++] = centerY + offset;	// y
-		m_Array[count++] = 0;				// z
+		m_Array[count++] = 0;					// z
 		// Ver2
 		m_Array[count++] = centerX + offset;
 		m_Array[count++] = centerY + offset;
@@ -357,7 +399,7 @@ void Renderer::GenQuads(int n)
 	glGenBuffers(1, &m_VBOLecture2);	// 개수 하나, 이름 지정
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture2);
 	glBufferData(GL_ARRAY_BUFFER, m_size * sizeof(float), m_Array, GL_STATIC_DRAW);	
-	
+	delete(m_Array);
 }
 
 void Renderer::DrawQuads()
@@ -368,6 +410,98 @@ void Renderer::DrawQuads()
 	glVertexAttribPointer(0, 3 /*세개씩 끊어서 하나의 버텍스를 구성해라!*/, GL_FLOAT, GL_FALSE, sizeof(float) * 3 /*다음 위치를 알려주는곳 (영어로는 stride)*/, 0);
 
 	glDrawArrays(GL_TRIANGLES, 0, m_num);	// 삼각형타입, ???, 그려야할 버텍스 개수	
+
+	glDisableVertexAttribArray(0);	// 0번지 disable
+}
+
+void Renderer::CreateGridMesh()
+{
+	float basePosX = -0.5f;
+	float basePosY = -0.5f;
+	float targetPosX = 0.5f;
+	float targetPosY = 0.5f;
+
+	int pointCountX = 32;
+	int pointCountY = 32;
+
+	float width = targetPosX - basePosX;
+	float height = targetPosY - basePosY;
+
+	float* point = new float[pointCountX*pointCountY * 2];
+	float* vertices = new float[(pointCountX - 1)*(pointCountY - 1) * 2 * 3 * 3];
+	m_VBOGridMesh_Count = (pointCountX - 1)*(pointCountY - 1) * 2 * 3;
+
+	//Prepare points
+	for (int x = 0; x < pointCountX; x++)
+	{
+		for (int y = 0; y < pointCountY; y++)
+		{
+			point[(y*pointCountX + x) * 2 + 0] = basePosX + width * (x / (float)(pointCountX - 1));
+			point[(y*pointCountX + x) * 2 + 1] = basePosY + height * (y / (float)(pointCountY - 1));
+		}
+	}
+
+	//Make triangles
+	int vertIndex = 0;
+	for (int x = 0; x < pointCountX - 1; x++)
+	{
+		for (int y = 0; y < pointCountY - 1; y++)
+		{
+			//Triangle part 1
+			vertices[vertIndex] = point[(y*pointCountX + x) * 2 + 0];
+			vertIndex++;
+			vertices[vertIndex] = point[(y*pointCountX + x) * 2 + 1];
+			vertIndex++;
+			vertices[vertIndex] = 0.f;
+			vertIndex++;
+			vertices[vertIndex] = point[((y + 1)*pointCountX + (x + 1)) * 2 + 0];
+			vertIndex++;
+			vertices[vertIndex] = point[((y + 1)*pointCountX + (x + 1)) * 2 + 1];
+			vertIndex++;
+			vertices[vertIndex] = 0.f;
+			vertIndex++;
+			vertices[vertIndex] = point[((y + 1)*pointCountX + x) * 2 + 0];
+			vertIndex++;
+			vertices[vertIndex] = point[((y + 1)*pointCountX + x) * 2 + 1];
+			vertIndex++;
+			vertices[vertIndex] = 0.f;
+			vertIndex++;
+
+			//Triangle part 2
+			vertices[vertIndex] = point[(y*pointCountX + x) * 2 + 0];
+			vertIndex++;
+			vertices[vertIndex] = point[(y*pointCountX + x) * 2 + 1];
+			vertIndex++;
+			vertices[vertIndex] = 0.f;
+			vertIndex++;
+			vertices[vertIndex] = point[(y*pointCountX + (x + 1)) * 2 + 0];
+			vertIndex++;
+			vertices[vertIndex] = point[(y*pointCountX + (x + 1)) * 2 + 1];
+			vertIndex++;
+			vertices[vertIndex] = 0.f;
+			vertIndex++;
+			vertices[vertIndex] = point[((y + 1)*pointCountX + (x + 1)) * 2 + 0];
+			vertIndex++;
+			vertices[vertIndex] = point[((y + 1)*pointCountX + (x + 1)) * 2 + 1];
+			vertIndex++;
+			vertices[vertIndex] = 0.f;
+			vertIndex++;
+		}
+	}
+
+	glGenBuffers(1, &m_VBOGridMesh);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOGridMesh);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float)*(pointCountX - 1)*(pointCountY - 1) * 2 * 3 * 3, vertices, GL_STATIC_DRAW);
+}
+
+void Renderer::Lecture3()
+{
+	glUseProgram(m_SolidRectShader);
+	glEnableVertexAttribArray(0);		// 나중에 설명함  -> 0번지를 enable
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOGridMesh);
+	glVertexAttribPointer(0, 3 /*세개씩 끊어서 하나의 버텍스를 구성해라!*/, GL_FLOAT, GL_FALSE, sizeof(float) * 3 /*다음 위치를 알려주는곳 (영어로는 stride)*/, 0);
+
+	glDrawArrays(GL_LINE_STRIP, 0, m_VBOGridMesh_Count);	// 트라이앵글 형태, , 그려야할 버텍스 개수
 
 	glDisableVertexAttribArray(0);	// 0번지 disable
 }
