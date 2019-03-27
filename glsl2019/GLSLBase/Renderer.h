@@ -24,6 +24,7 @@ public:
 	void Lecture2();
 	void Lecture3();
 	void Lecture4();
+	void Lecture5();
 	void GenQuads(int n);
 	void DrawQuads();
 	void CreateGridMesh();
@@ -48,7 +49,7 @@ private:
 	int m_size;
 	unsigned int m_num = 0;	
 	GLuint m_VBOLecture2 = 0;
-	
+
 	GLuint m_VBOGridMesh = 0;
 	int m_VBOGridMesh_Count = 0;
 
