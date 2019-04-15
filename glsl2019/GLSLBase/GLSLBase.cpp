@@ -31,7 +31,8 @@ void RenderScene(void)
 	//g_Renderer->Lecture3();
 	//g_Renderer->DrawQuads();
 	//g_Renderer->Lecture5();
-	g_Renderer->Lecture6();
+	//g_Renderer->Lecture6();
+	g_Renderer->Lecture7();
 
 	glutSwapBuffers();	// 더블버퍼링을 위해서 버퍼 스왑
 }

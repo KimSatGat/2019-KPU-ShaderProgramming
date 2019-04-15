@@ -24,9 +24,10 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	m_WindowSizeY = windowSizeY;
 
 	//Load shaders
-	m_SolidRectShader = CompileShaders("./Shaders/SolidRect.vs", "./Shaders/SolidRect.fs");
-	m_SimpleVelShader = CompileShaders("./Shaders/SimpleVel.vs", "./Shaders/SimpleVel.fs");
+	//m_SolidRectShader = CompileShaders("./Shaders/SolidRect.vs", "./Shaders/SolidRect.fs");
+	//m_SimpleVelShader = CompileShaders("./Shaders/SimpleVel.vs", "./Shaders/SimpleVel.fs");
 	m_Simple2Shader = CompileShaders("./Shaders/Simple2.vs", "./Shaders/Simple2.fs");
+	m_Simple3Shader = CompileShaders("./Shaders/Simple3.vs", "./Shaders/Simple3.fs");
 	//Create VBOs
 	CreateVertexBufferObjects();
 }
@@ -79,7 +80,8 @@ void Renderer::CreateVertexBufferObjects()
 	*/
 
 	//GenQuads(1000);
-	GenQuads2(1000);
+	//GenQuads2(1000);
+	GenQuads3(1);
 	//CreateGridMesh();
 }
 
@@ -478,19 +480,20 @@ void Renderer::GenQuads(int n)
 // 버텍스 생성2
 void Renderer::GenQuads2(int n)
 {
-	float offset = 0.01f;			// 반지름
-	float centerX, centerY, centerZ;
-	int count = 0;
-	float velX, velY, velZ;
-	float startTime, lifeTime;
-	float ratio, amplitude;			// 주기 진폭
-	float randValue, randThres;
-	float startTimeMax = 6.f;
-	float lifeTimeMax = 1000.f;
+	float offset = 0.03f;				// 반지름
+	float centerX, centerY, centerZ;	// 좌표
+	int count = 0;						// 배열 인덱스
+	float velX, velY, velZ;				// 가속도
+	float startTime, lifeTime;			// 시작시간, 생명시간
+	float ratio, amplitude;				// 주기 진폭
+	float randValue;					// 랜덤 값
+	float startTimeMax = 2.f;			// 최대 시작 시간
+	float lifeTimeMax = 3.f;			// 최대 생명 시간
+	float r, g, b, a;
 
-	m_num = n * 6;					// 버텍스 개수
-	m_size = n * 11 * 6;			// 원소 개수	10 == 버텍스의 원소 개수 6 == 쿼드당 버텍스 개수
-	m_Array = new float[m_size];	// 배열 생성	
+	m_num = n * 6;						// 버텍스 개수
+	m_size = n * 15 * 6;				// 원소 개수	15 == 버텍스의 원소 개수 6 == 쿼드당 버텍스 개수
+	m_Array = new float[m_size];		// 배열 생성	
 
 	srand(GetTickCount());
 
@@ -508,10 +511,16 @@ void Renderer::GenQuads2(int n)
 		lifeTime = ((float)rand() / (float)RAND_MAX) * lifeTimeMax;
 		ratio = (float)rand() / (float)RAND_MAX;
 		amplitude = (float)rand() / (float)RAND_MAX * 2;
-		randValue = (float)rand() / (float)RAND_MAX;
+
+		randValue = (float)rand() / (float)RAND_MAX * 2;
+
+		r = (float)rand() / (float)RAND_MAX;
+		g = (float)rand() / (float)RAND_MAX;
+		b = (float)rand() / (float)RAND_MAX;
+		a = 1.f;
 
 		// Ver1
-		m_Array[count++] = centerX - offset;	// x
+		m_Array[count++] = centerX + offset;	// x
 		m_Array[count++] = centerY + offset;	// y
 		m_Array[count++] = centerZ;				// z
 
@@ -523,7 +532,13 @@ void Renderer::GenQuads2(int n)
 		m_Array[count++] = lifeTime;			// 생존시간
 		m_Array[count++] = ratio;				// 주기
 		m_Array[count++] = amplitude;			// 진폭
-		m_Array[count++] = randValue;				// 값
+
+		m_Array[count++] = randValue;			// 값
+
+		m_Array[count++] = r;			// r
+		m_Array[count++] = g;			// g
+		m_Array[count++] = b;			// b
+		m_Array[count++] = a;			// a
 
 		// Ver2
 		m_Array[count++] = centerX - offset;	// x
@@ -538,11 +553,17 @@ void Renderer::GenQuads2(int n)
 		m_Array[count++] = lifeTime;			// 생존시간
 		m_Array[count++] = ratio;				// 주기
 		m_Array[count++] = amplitude;			// 진폭
-		m_Array[count++] = randValue;				// 값
+
+		m_Array[count++] = randValue;			// 값
+
+		m_Array[count++] = r;			// r
+		m_Array[count++] = g;			// g
+		m_Array[count++] = b;			// b
+		m_Array[count++] = a;			// a
 
 		// Ver3
 		m_Array[count++] = centerX - offset;	// x
-		m_Array[count++] = centerY + offset;	// y
+		m_Array[count++] = centerY - offset;	// y
 		m_Array[count++] = centerZ;				// z
 
 		m_Array[count++] = velX;				// velX
@@ -553,11 +574,17 @@ void Renderer::GenQuads2(int n)
 		m_Array[count++] = lifeTime;			// 생존시간
 		m_Array[count++] = ratio;				// 주기
 		m_Array[count++] = amplitude;			// 진폭
-		m_Array[count++] = randValue;				// 값
+
+		m_Array[count++] = randValue;			// 값
+
+		m_Array[count++] = r;			// r
+		m_Array[count++] = g;			// g
+		m_Array[count++] = b;			// b
+		m_Array[count++] = a;			// a
 
 		// Ver4
 		m_Array[count++] = centerX - offset;	// x
-		m_Array[count++] = centerY + offset;	// y
+		m_Array[count++] = centerY - offset;	// y
 		m_Array[count++] = centerZ;				// z
 
 		m_Array[count++] = velX;				// velX
@@ -568,10 +595,16 @@ void Renderer::GenQuads2(int n)
 		m_Array[count++] = lifeTime;			// 생존시간
 		m_Array[count++] = ratio;				// 주기
 		m_Array[count++] = amplitude;			// 진폭
-		m_Array[count++] = randValue;				// 값
+
+		m_Array[count++] = randValue;			// 값
+
+		m_Array[count++] = r;			// r
+		m_Array[count++] = g;			// g
+		m_Array[count++] = b;			// b
+		m_Array[count++] = a;			// a
 
 		// Ver5
-		m_Array[count++] = centerX - offset;	// x
+		m_Array[count++] = centerX + offset;	// x
 		m_Array[count++] = centerY + offset;	// y
 		m_Array[count++] = centerZ;				// z
 
@@ -583,11 +616,17 @@ void Renderer::GenQuads2(int n)
 		m_Array[count++] = lifeTime;			// 생존시간
 		m_Array[count++] = ratio;				// 주기
 		m_Array[count++] = amplitude;			// 진폭
-		m_Array[count++] = randValue;				// 값
+
+		m_Array[count++] = randValue;			// 값
+
+		m_Array[count++] = r;			// r
+		m_Array[count++] = g;			// g
+		m_Array[count++] = b;			// b
+		m_Array[count++] = a;			// a
 
 		// Ver6
-		m_Array[count++] = centerX - offset;	// x
-		m_Array[count++] = centerY + offset;	// y
+		m_Array[count++] = centerX + offset;	// x
+		m_Array[count++] = centerY - offset;	// y
 		m_Array[count++] = centerZ;				// z
 
 		m_Array[count++] = velX;				// velX
@@ -598,7 +637,13 @@ void Renderer::GenQuads2(int n)
 		m_Array[count++] = lifeTime;			// 생존시간
 		m_Array[count++] = ratio;				// 주기
 		m_Array[count++] = amplitude;			// 진폭
-		m_Array[count++] = randValue;				// 값
+
+		m_Array[count++] = randValue;			// 값
+
+		m_Array[count++] = r;			// r
+		m_Array[count++] = g;			// g
+		m_Array[count++] = b;			// b
+		m_Array[count++] = a;			// a
 	}
 
 	glGenBuffers(1, &m_VBOLecture2);	// 개수 하나, 이름 지정
@@ -607,6 +652,73 @@ void Renderer::GenQuads2(int n)
 	delete(m_Array);
 }
 
+// 버텍스 생성3
+void Renderer::GenQuads3(int n)
+{
+	float offset = 0.5f;				// 반지름
+	float centerX, centerY, centerZ;	// 좌표
+	int count = 0;						// 배열 인덱스	
+
+	m_num = n * 6;						// 버텍스 개수
+	m_size = n * 5 * 6;				// 원소 개수	3 == 버텍스의 원소 개수 6 == 쿼드당 버텍스 개수
+	m_Array = new float[m_size];		// 배열 생성	
+
+	srand(GetTickCount());
+
+	for (int i = 0; i < n; i++)
+	{
+		centerX = 0.f;
+		centerY = 0.f;
+		centerZ = 0.f;
+	
+		// Ver1
+		m_Array[count++] = centerX + offset;	// x
+		m_Array[count++] = centerY + offset;	// y
+		m_Array[count++] = centerZ;				// z
+		m_Array[count++] = 1.f;					// u
+		m_Array[count++] = 1.f;					// v
+		
+		// Ver2
+		m_Array[count++] = centerX - offset;	// x
+		m_Array[count++] = centerY + offset;	// y
+		m_Array[count++] = centerZ;				// z
+		m_Array[count++] = 0.f;					// u
+		m_Array[count++] = 1.f;					// v
+
+		// Ver3
+		m_Array[count++] = centerX - offset;	// x
+		m_Array[count++] = centerY - offset;	// y
+		m_Array[count++] = centerZ;				// z
+		m_Array[count++] = 0.f;					// u
+		m_Array[count++] = 0.f;					// v
+
+		// Ver4
+		m_Array[count++] = centerX - offset;	// x
+		m_Array[count++] = centerY - offset;	// y
+		m_Array[count++] = centerZ;				// z
+		m_Array[count++] = 0.f;					// u
+		m_Array[count++] = 0.f;					// v
+
+		// Ver5
+		m_Array[count++] = centerX + offset;	// x
+		m_Array[count++] = centerY + offset;	// y
+		m_Array[count++] = centerZ;				// z
+		m_Array[count++] = 1.f;					// u
+		m_Array[count++] = 1.f;					// v
+
+		// Ver6
+		m_Array[count++] = centerX + offset;	// x
+		m_Array[count++] = centerY - offset;	// y
+		m_Array[count++] = centerZ;				// z
+		m_Array[count++] = 1.f;					// u
+		m_Array[count++] = 0.f;					// v
+	}
+
+	glGenBuffers(1, &m_VBOLecture2);	// 개수 하나, 이름 지정
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture2);
+	glBufferData(GL_ARRAY_BUFFER, m_size * sizeof(float), m_Array, GL_STATIC_DRAW);
+	delete(m_Array);
+}
 void Renderer::DrawQuads()
 {
 	glUseProgram(m_SolidRectShader);
@@ -773,12 +885,16 @@ void Renderer::Lecture6()
 {
 	GLuint shader = m_Simple2Shader;
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	glUseProgram(shader);
 	
 	GLuint aPos = glGetAttribLocation(shader, "a_Position");
 	GLuint aVel = glGetAttribLocation(shader, "a_Vel");
 	GLuint aStartLifeRatioAmp = glGetAttribLocation(shader, "a_StartLifeRatioAmp");
-	GLuint aValue = glGetAttribLocation(shader, "a_Value");
+	GLuint aRandVal = glGetAttribLocation(shader, "a_RandVal");
+	GLuint aColor = glGetAttribLocation(shader, "a_Color");
 
 	GLuint uTime = glGetUniformLocation(shader, "u_Time");
 
@@ -788,19 +904,48 @@ void Renderer::Lecture6()
 	glEnableVertexAttribArray(aPos);
 	glEnableVertexAttribArray(aVel);
 	glEnableVertexAttribArray(aStartLifeRatioAmp);
-	glEnableVertexAttribArray(aValue);
+	glEnableVertexAttribArray(aRandVal);
+	glEnableVertexAttribArray(aColor);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture2);
 
-	glVertexAttribPointer(aPos, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 11, 0);
-	glVertexAttribPointer(aVel, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 11, (GLvoid*)(sizeof(float) * 3));
-	glVertexAttribPointer(aStartLifeRatioAmp, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 11, (GLvoid*)(sizeof(float) * 6));
-	glVertexAttribPointer(aValue, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 11, (GLvoid*)(sizeof(float) * 10));
+	glVertexAttribPointer(aPos, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 15, 0);
+	glVertexAttribPointer(aVel, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 15, (GLvoid*)(sizeof(float) * 3));
+	glVertexAttribPointer(aStartLifeRatioAmp, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 15, (GLvoid*)(sizeof(float) * 6));
+	glVertexAttribPointer(aRandVal, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 15, (GLvoid*)(sizeof(float) * 10));
+	glVertexAttribPointer(aColor, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 15, (GLvoid*)(sizeof(float) * 11));
 
 	glDrawArrays(GL_TRIANGLES, 0, m_num);	// 삼각형타입, ???, 그려야할 버텍스 개수
 
 	glDisableVertexAttribArray(aPos);	
 	glDisableVertexAttribArray(aVel);
 	glDisableVertexAttribArray(aStartLifeRatioAmp);
-	glDisableVertexAttribArray(aValue);
+	glDisableVertexAttribArray(aRandVal);
+	glDisableVertexAttribArray(aColor);
+}
+
+void Renderer::Lecture7()
+{
+	GLuint shader = m_Simple3Shader;
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glUseProgram(shader);
+	
+	GLuint aPos = glGetAttribLocation(shader, "a_Position");	
+	GLuint aUV = glGetAttribLocation(shader, "a_UV");
+
+	glEnableVertexAttribArray(aPos);
+	glEnableVertexAttribArray(aUV);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture2);
+
+	glVertexAttribPointer(aPos, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
+	glVertexAttribPointer(aUV, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (GLvoid*)(sizeof(float) * 2));
+
+	glDrawArrays(GL_TRIANGLES, 0, m_num);	// 삼각형타입, ???, 그려야할 버텍스 개수
+
+	glDisableVertexAttribArray(aPos);	
+	glDisableVertexAttribArray(aUV);
 }
