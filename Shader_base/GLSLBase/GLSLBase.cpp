@@ -25,14 +25,15 @@ void RenderScene(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
+	//g_Renderer->FillAll(0.2);
 	// Renderer Test
 	//g_Renderer->Test();
 	//g_Renderer->Lecture2();
 	//g_Renderer->Lecture3();
 	//g_Renderer->Lecture4();
 	//g_Renderer->Lecture5();
-	//g_Renderer->Lecture6();
-	g_Renderer->Lecture7();
+	g_Renderer->Lecture6();
+	//g_Renderer->Lecture7();
 
 	glutSwapBuffers();
 }

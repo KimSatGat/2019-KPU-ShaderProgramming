@@ -59,9 +59,15 @@ private:
 	GLuint m_SimpleVelShader = 0;
 	GLuint m_SinTrailShader = 0;
 	GLuint m_FSSandboxShader = 0;
+	GLuint m_FillAllShader = 0;
 
+	//Textures
+	GLuint m_particle1Texture = 0;
+	GLuint m_particle2Texture = 0;
+	GLuint m_particle3Texture = 0;
 public:
 	void Lecture7();
 	void Lecture6();
+	void FillAll(float alpha);
 };
 
