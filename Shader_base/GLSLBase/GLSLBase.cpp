@@ -32,9 +32,9 @@ void RenderScene(void)
 	//g_Renderer->Lecture3();
 	//g_Renderer->Lecture4();
 	//g_Renderer->Lecture5();
-	g_Renderer->Lecture6();
+	//g_Renderer->Lecture6();
 	//g_Renderer->Lecture7();
-
+	g_Renderer->DrawTextureRect(0);
 	glutSwapBuffers();
 }
 

@@ -32,7 +32,7 @@ private:
 	void AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum ShaderType);
 	GLuint CompileShaders(char* filenameVS, char* filenameFS);
 	void CreateVertexBufferObjects(); 
-	void GenQuadsVBO(int count, bool bRandPos, GLuint * id, GLuint * vCount);
+	void GenQuadsVBO(int count, bool bRandPos, GLuint * id, GLuint * vCount);	
 	void CreateGridMesh();
 
 	unsigned char * Renderer::loadBMPRaw(const char * imagepath, unsigned int& outWidth, unsigned int& outHeight);
@@ -50,9 +50,9 @@ private:
 	GLuint m_VBOQuads_VertexCount = 0;
 	GLuint m_VBOQuads1 = 0;
 	GLuint m_VBOQuads_VertexCount1 = 0;
-
 	GLuint m_VBOGridMesh = 0;
 	int m_VBOGridMesh_Count = 0;
+	GLuint m_VBOTextureRect = 0;
 
 	//Shaders
 	GLuint m_SolidRectShader = 0;
@@ -60,14 +60,17 @@ private:
 	GLuint m_SinTrailShader = 0;
 	GLuint m_FSSandboxShader = 0;
 	GLuint m_FillAllShader = 0;
+	GLuint m_TextureRectShader = 0;
 
 	//Textures
 	GLuint m_particle1Texture = 0;
 	GLuint m_particle2Texture = 0;
 	GLuint m_particle3Texture = 0;
+
 public:
 	void Lecture7();
 	void Lecture6();
 	void FillAll(float alpha);
+	void DrawTextureRect(GLuint tex);
 };
 

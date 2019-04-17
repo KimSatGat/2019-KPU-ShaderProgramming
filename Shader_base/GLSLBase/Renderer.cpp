@@ -22,16 +22,17 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	m_WindowSizeY = windowSizeY;
 
 	//Load shaders
-	m_SolidRectShader = CompileShaders("./Shaders/SolidRect.vs", "./Shaders/SolidRect.fs");
-	m_SimpleVelShader = CompileShaders("./Shaders/SimpleVel.vs", "./Shaders/SimpleVel.fs");
-	m_SinTrailShader = CompileShaders("./Shaders/SinTrail.vs", "./Shaders/SinTrail.fs");
-	m_FSSandboxShader = CompileShaders("./Shaders/FSSandbox.vs", "./Shaders/FSSandbox.fs");
-	m_FillAllShader = CompileShaders("./Shaders/FillAll.vs", "./Shaders/FillAll.fs");
+	//m_SolidRectShader = CompileShaders("./Shaders/SolidRect.vs", "./Shaders/SolidRect.fs");
+	//m_SimpleVelShader = CompileShaders("./Shaders/SimpleVel.vs", "./Shaders/SimpleVel.fs");
+	//m_SinTrailShader = CompileShaders("./Shaders/SinTrail.vs", "./Shaders/SinTrail.fs");
+	//m_FSSandboxShader = CompileShaders("./Shaders/FSSandbox.vs", "./Shaders/FSSandbox.fs");
+	//m_FillAllShader = CompileShaders("./Shaders/FillAll.vs", "./Shaders/FillAll.fs");
+	m_TextureRectShader = CompileShaders("./Shaders/TextureRect.vs", "./Shaders/TextureRect.fs");
 
 	//Load textures
-	m_particle1Texture = CreatePngTexture("./Textures/particle.png");
-	m_particle2Texture = CreatePngTexture("./Textures/particle1.png");
-	m_particle3Texture = CreatePngTexture("./Textures/particle2.png");
+	//m_particle1Texture = CreatePngTexture("./Textures/particle.png");
+	//m_particle2Texture = CreatePngTexture("./Textures/particle1.png");
+	//m_particle3Texture = CreatePngTexture("./Textures/particle2.png");
 
 	//Create VBOs
 	CreateVertexBufferObjects();
@@ -54,6 +55,23 @@ void Renderer::CreateVertexBufferObjects()
 	glGenBuffers(1, &m_VBORect);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBORect);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(rect), rect, GL_STATIC_DRAW);
+	
+	size = 0.5f;
+	float texrect[]
+		=
+	{
+		-size, -size, 0.f, 0.f, 0.f //x, y, z, u, v
+		-size, size, 0.f, 0.f, 1.f,
+		size, size, 0.f, 1.f, 1.f   //Triangle1
+		-size, -size, 0.f, 0.f, 0.f,
+		size, size, 0.f, 1.f, 1.f,
+		size, -size, 0.f, 1.f, 0.f  //Triangle2
+	};
+
+	glGenBuffers(1, &m_VBOTextureRect);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOTextureRect);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(texrect), texrect, GL_STATIC_DRAW);
+
 
 	float color[]
 		=
@@ -81,8 +99,8 @@ void Renderer::CreateVertexBufferObjects()
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertex), triangleVertex, GL_STATIC_DRAW);
 
-	GenQuadsVBO(1000, true, &m_VBOQuads, &m_VBOQuads_VertexCount);
-	GenQuadsVBO(1000, false, &m_VBOQuads1, &m_VBOQuads_VertexCount1);
+	//GenQuadsVBO(1000, true, &m_VBOQuads, &m_VBOQuads_VertexCount);
+	//GenQuadsVBO(1000, false, &m_VBOQuads1, &m_VBOQuads_VertexCount1);	
 	CreateGridMesh();
 }
 
@@ -762,6 +780,7 @@ void Renderer::Lecture7()
 	glDisableVertexAttribArray(aPos);
 	glDisableVertexAttribArray(aUV);
 }
+
 void Renderer::FillAll(float alpha)
 {
 	// TODO: 여기에 구현 코드 추가.
@@ -782,4 +801,32 @@ void Renderer::FillAll(float alpha)
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glDisableVertexAttribArray(aPos);	
+	glDisable(GL_BLEND);
+}
+
+void Renderer::DrawTextureRect(GLuint tex)
+{
+	GLuint shader = m_TextureRectShader;
+	glUseProgram(shader);
+
+	GLuint uTime = glGetUniformLocation(shader, "u_Time");
+	glUniform1f(uTime, g_Time);
+	g_Time += 0.01;
+
+	GLuint aPos = glGetAttribLocation(shader, "a_Position");
+	GLuint aTex = glGetAttribLocation(shader, "a_Tex");
+
+	glEnableVertexAttribArray(aPos);
+	glEnableVertexAttribArray(aTex);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOTextureRect);
+
+	glVertexAttribPointer(aPos, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
+	glVertexAttribPointer(aTex, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5,
+		(GLvoid*)(sizeof(float) * 3));
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisableVertexAttribArray(aPos);
+	glDisableVertexAttribArray(aTex);
 }

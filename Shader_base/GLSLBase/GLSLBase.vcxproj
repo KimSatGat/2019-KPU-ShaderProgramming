@@ -183,6 +183,8 @@
     <None Include="Shaders\SinTrail.vs" />
     <None Include="Shaders\SolidRect.fs" />
     <None Include="Shaders\SolidRect.vs" />
+    <None Include="Shaders\TextureRect.fs" />
+    <None Include="Shaders\TextureRect.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
