@@ -715,8 +715,8 @@ void Renderer::GenQuads3(int n)
 	}
 
 	glGenBuffers(1, &m_VBOLecture2);	// 개수 하나, 이름 지정
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture2);
-	glBufferData(GL_ARRAY_BUFFER, m_size * sizeof(float), m_Array, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture2);	// 작업할 대상 선택
+	glBufferData(GL_ARRAY_BUFFER, m_size * sizeof(float), m_Array, GL_STATIC_DRAW);	// VBOLEcture2에 데이터 할당
 	delete(m_Array);
 }
 void Renderer::DrawQuads()
@@ -883,25 +883,25 @@ void Renderer::Lecture5()
 
 void Renderer::Lecture6()
 {
-	GLuint shader = m_Simple2Shader;
+	GLuint shader = m_Simple2Shader;	// 렌더링에 사용할 세이더를 지정  -> 여기서는 Simple2Shader를 쓴다
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);		// 블렌딩을 쓰겠다
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	// 알파블렌딩을 쓰겠다
 
-	glUseProgram(shader);
+	glUseProgram(shader);	// 해당 쉐이더를 사용
 	
-	GLuint aPos = glGetAttribLocation(shader, "a_Position");
+	GLuint aPos = glGetAttribLocation(shader, "a_Position");	// Simple2Shader에 지정된 쉐이더 glGetAttribLocation : a_Position와 연동
 	GLuint aVel = glGetAttribLocation(shader, "a_Vel");
 	GLuint aStartLifeRatioAmp = glGetAttribLocation(shader, "a_StartLifeRatioAmp");
 	GLuint aRandVal = glGetAttribLocation(shader, "a_RandVal");
 	GLuint aColor = glGetAttribLocation(shader, "a_Color");
 
-	GLuint uTime = glGetUniformLocation(shader, "u_Time");
+	GLuint uTime = glGetUniformLocation(shader, "u_Time");	// glGetUniformLocation : uniform 변수 u_Time 연결  uniform 변수는 외부 변화된 값을 받아온다
 
-	glUniform1f(uTime, offsetTime);
+	glUniform1f(uTime, offsetTime);	// glUniform1f(받는 변수, 넘기는 변수)
 	offsetTime += 0.0001f;
 	
-	glEnableVertexAttribArray(aPos);
+	glEnableVertexAttribArray(aPos);	// 배열 타입으로 어트리뷰트 값을 사용하게 한다
 	glEnableVertexAttribArray(aVel);
 	glEnableVertexAttribArray(aStartLifeRatioAmp);
 	glEnableVertexAttribArray(aRandVal);
@@ -909,13 +909,13 @@ void Renderer::Lecture6()
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture2);
 
-	glVertexAttribPointer(aPos, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 15, 0);
-	glVertexAttribPointer(aVel, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 15, (GLvoid*)(sizeof(float) * 3));
+	glVertexAttribPointer(aPos, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 15, 0);	// aPos의 id값을 3개씩 읽고, 15칸씩 stride한다. 
+	glVertexAttribPointer(aVel, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 15, (GLvoid*)(sizeof(float) * 3));	// aVel의 id값을 3개씩 읽고 15칸씩 stride하고 , 맨처음에 sizeof(float)*3 (세칸)만큼 건너 띄어서 읽는다
 	glVertexAttribPointer(aStartLifeRatioAmp, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 15, (GLvoid*)(sizeof(float) * 6));
 	glVertexAttribPointer(aRandVal, 1, GL_FLOAT, GL_FALSE, sizeof(float) * 15, (GLvoid*)(sizeof(float) * 10));
 	glVertexAttribPointer(aColor, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 15, (GLvoid*)(sizeof(float) * 11));
 
-	glDrawArrays(GL_TRIANGLES, 0, m_num);	// 삼각형타입, ???, 그려야할 버텍스 개수
+	glDrawArrays(GL_TRIANGLES, 0, m_num);	// 삼각형타입, ???, 그려야할 버텍스 개수	
 
 	glDisableVertexAttribArray(aPos);	
 	glDisableVertexAttribArray(aVel);

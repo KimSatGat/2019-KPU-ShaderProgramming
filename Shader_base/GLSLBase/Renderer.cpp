@@ -60,9 +60,9 @@ void Renderer::CreateVertexBufferObjects()
 	float texrect[]
 		=
 	{
-		-size, -size, 0.f, 0.f, 0.f //x, y, z, u, v
+		-size, -size, 0.f, 0.f, 0.f, //x, y, z, u, v
 		-size, size, 0.f, 0.f, 1.f,
-		size, size, 0.f, 1.f, 1.f   //Triangle1
+		size, size, 0.f, 1.f, 1.f,   //Triangle1
 		-size, -size, 0.f, 0.f, 0.f,
 		size, size, 0.f, 1.f, 1.f,
 		size, -size, 0.f, 1.f, 0.f  //Triangle2
@@ -811,7 +811,7 @@ void Renderer::DrawTextureRect(GLuint tex)
 
 	GLuint uTime = glGetUniformLocation(shader, "u_Time");
 	glUniform1f(uTime, g_Time);
-	g_Time += 0.01;
+	g_Time += 0.001;
 
 	GLuint aPos = glGetAttribLocation(shader, "a_Position");
 	GLuint aTex = glGetAttribLocation(shader, "a_Tex");
@@ -819,11 +819,11 @@ void Renderer::DrawTextureRect(GLuint tex)
 	glEnableVertexAttribArray(aPos);
 	glEnableVertexAttribArray(aTex);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBOTextureRect);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBORect);
 
-	glVertexAttribPointer(aPos, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
-	glVertexAttribPointer(aTex, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5,
-		(GLvoid*)(sizeof(float) * 3));
+	glVertexAttribPointer(aPos, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, 0);
+	glVertexAttribPointer(aTex, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 6,
+		(GLvoid*)(sizeof(float) * 4));
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
