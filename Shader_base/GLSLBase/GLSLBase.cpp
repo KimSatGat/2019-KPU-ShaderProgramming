@@ -34,7 +34,8 @@ void RenderScene(void)
 	//g_Renderer->Lecture5();
 	//g_Renderer->Lecture6();
 	//g_Renderer->Lecture7();
-	g_Renderer->DrawTextureRect(0);
+	//g_Renderer->DrawTextureRect(0);
+	g_Renderer->DrawMultiTextureShader();
 	glutSwapBuffers();
 }
 

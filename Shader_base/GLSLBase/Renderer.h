@@ -61,16 +61,19 @@ private:
 	GLuint m_FSSandboxShader = 0;
 	GLuint m_FillAllShader = 0;
 	GLuint m_TextureRectShader = 0;
+	GLuint m_MultiTextureShader = 0;
 
 	//Textures
-	GLuint m_particle1Texture = 0;
-	GLuint m_particle2Texture = 0;
-	GLuint m_particle3Texture = 0;
-
+	GLuint m_CheckboardTexture = 0;
+	
 public:
 	void Lecture7();
 	void Lecture6();
 	void FillAll(float alpha);
 	void DrawTextureRect(GLuint tex);
+	void CreateTextures();
+	void CreateVBO_MultiTextureShader();
+	void CreateTextures_MultiTextureShader();
+	void DrawMultiTextureShader();
 };
 

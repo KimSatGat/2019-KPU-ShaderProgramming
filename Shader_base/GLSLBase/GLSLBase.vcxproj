@@ -177,6 +177,8 @@
     <None Include="Shaders\FillAll.vs" />
     <None Include="Shaders\FSSandbox.fs" />
     <None Include="Shaders\FSSandbox.vs" />
+    <None Include="Shaders\MultiTexture.fs" />
+    <None Include="Shaders\MultiTexture.vs" />
     <None Include="Shaders\SimpleVel.fs" />
     <None Include="Shaders\SimpleVel.vs" />
     <None Include="Shaders\SinTrail.fs" />
