@@ -61,10 +61,12 @@ private:
 	GLuint m_FSSandboxShader = 0;
 	GLuint m_FillAllShader = 0;
 	GLuint m_TextureRectShader = 0;
-	GLuint m_MultiTextureShader = 0;
+	GLuint m_MultiTextureShader = 0;	
+	GLuint m_DrawNumberShader = 0;
 
 	//Textures
 	GLuint m_CheckboardTexture = 0;
+	GLuint m_NumberTexture = 0;
 	
 public:
 	void Lecture7();
@@ -73,7 +75,11 @@ public:
 	void DrawTextureRect(GLuint tex);
 	void CreateTextures();
 	void CreateVBO_MultiTextureShader();
-	void CreateTextures_MultiTextureShader();
+	void CreateTextures_MultiTextureShader();	
 	void DrawMultiTextureShader();
+
+	//2019-05-15	
+	void DrawNumber(int* number);	
+
 };
 

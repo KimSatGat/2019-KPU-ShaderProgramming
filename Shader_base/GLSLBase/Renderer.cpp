@@ -27,11 +27,12 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	//m_SinTrailShader = CompileShaders("./Shaders/SinTrail.vs", "./Shaders/SinTrail.fs");
 	//m_FSSandboxShader = CompileShaders("./Shaders/FSSandbox.vs", "./Shaders/FSSandbox.fs");
 	//m_FillAllShader = CompileShaders("./Shaders/FillAll.vs", "./Shaders/FillAll.fs");
-	m_TextureRectShader = CompileShaders("./Shaders/TextureRect.vs", "./Shaders/TextureRect.fs");
-	m_MultiTextureShader = CompileShaders("./Shaders/MultiTexture.vs", "./Shaders/MultiTexture.fs");
+	//m_TextureRectShader = CompileShaders("./Shaders/TextureRect.vs", "./Shaders/TextureRect.fs");
+	m_MultiTextureShader = CompileShaders("./Shaders/MultiTexture.vs", "./Shaders/MultiTexture.fs");	
+	m_DrawNumberShader = CompileShaders("./Shaders/DrawNumber.vs", "./Shaders/DrawNumber.fs");
 
 	//Load textures
-	//m_particle1Texture = CreatePngTexture("./Textures/particle.png");
+	m_NumberTexture = CreatePngTexture("./Textures/Numbers.png");
 	//m_particle2Texture = CreatePngTexture("./Textures/particle1.png");
 	//m_particle3Texture = CreatePngTexture("./Textures/particle2.png");
 
@@ -1045,4 +1046,38 @@ void Renderer::DrawMultiTextureShader()
 
 	glDisableVertexAttribArray(attrribPosition);
 	glDisableVertexAttribArray(attrribTexPos);
+}
+
+void Renderer::DrawNumber(int* number)
+{
+	GLuint shader = m_DrawNumberShader;
+
+	glUseProgram(shader);
+
+	// Uniform Inputs
+	GLuint uNum = glGetUniformLocation(shader, "u_Number");
+	glUniform1iv(uNum, 3, number);
+	
+	// Vertex Setting
+	GLuint aPos = glGetAttribLocation(shader, "a_Position");
+	GLuint aTex = glGetAttribLocation(shader, "a_Tex");
+	glEnableVertexAttribArray(aPos);
+	glEnableVertexAttribArray(aTex);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOTextureRect);
+	glVertexAttribPointer(aPos, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
+	glVertexAttribPointer(aTex, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (GLvoid*)(sizeof(float) * 3));
+
+	// Texture Setting
+	GLuint uTex = glGetUniformLocation(shader, "u_Texture");	
+	glUniform1i(uTex, 0);							// À¯´ÏÆû °ª 0¹ø ½½·Ô
+	
+	glActiveTexture(GL_TEXTURE0);					// 0¹ø ½½·ÔÁöÁ¤ 
+	glBindTexture(GL_TEXTURE_2D, m_NumberTexture);	// 0¹ø ½½·Ô¿¡ 2d ÇüÅÂ·Î m_NumberTexture¸¦ ¾¸
+
+	// Draw Here
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	// Restore to default
+	glDisableVertexAttribArray(aPos);
+	glDisableVertexAttribArray(aTex);
 }

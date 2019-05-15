@@ -181,6 +181,8 @@
     <None Include="Shaders\MultiTexture.vs" />
     <None Include="Shaders\SimpleVel.fs" />
     <None Include="Shaders\SimpleVel.vs" />
+    <None Include="Shaders\DrawNumber.fs" />
+    <None Include="Shaders\DrawNumber.vs" />
     <None Include="Shaders\SinTrail.fs" />
     <None Include="Shaders\SinTrail.vs" />
     <None Include="Shaders\SolidRect.fs" />

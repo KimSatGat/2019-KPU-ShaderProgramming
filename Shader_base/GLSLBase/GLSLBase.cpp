@@ -35,7 +35,9 @@ void RenderScene(void)
 	//g_Renderer->Lecture6();
 	//g_Renderer->Lecture7();
 	//g_Renderer->DrawTextureRect(0);
-	g_Renderer->DrawMultiTextureShader();
+	//g_Renderer->DrawMultiTextureShader();
+	int number[] = { 5, 6, 2 };
+	g_Renderer->DrawNumber(number);	
 	glutSwapBuffers();
 }
 
