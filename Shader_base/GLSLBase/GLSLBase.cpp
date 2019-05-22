@@ -36,8 +36,16 @@ void RenderScene(void)
 	//g_Renderer->Lecture7();
 	//g_Renderer->DrawTextureRect(0);
 	//g_Renderer->DrawMultiTextureShader();
-	int number[] = { 5, 6, 2 };
-	g_Renderer->DrawNumber(number);	
+	//int number[] = { 5, 6, 2 };
+	//g_Renderer->DrawNumber(number);
+	/*
+	static int num = 0;
+	num++;
+	if (num > 25)
+		num = 0;
+	g_Renderer->DrawSpriteSequence(num);
+	*/
+	g_Renderer->VSSandbox();
 	glutSwapBuffers();
 }
 

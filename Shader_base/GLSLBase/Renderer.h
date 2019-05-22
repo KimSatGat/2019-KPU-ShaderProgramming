@@ -63,10 +63,13 @@ private:
 	GLuint m_TextureRectShader = 0;
 	GLuint m_MultiTextureShader = 0;	
 	GLuint m_DrawNumberShader = 0;
+	GLuint m_SpriteAnimShader = 0;
+	GLuint m_VSSandboxShader = 0;
 
 	//Textures
 	GLuint m_CheckboardTexture = 0;
 	GLuint m_NumberTexture = 0;
+	GLuint m_SpriteAnimTexture = 0;
 	
 public:
 	void Lecture7();
@@ -81,5 +84,8 @@ public:
 	//2019-05-15	
 	void DrawNumber(int* number);	
 
+	//2019-05-20
+	void DrawSpriteSequence(GLuint number);
+	void VSSandbox();
 };
 
