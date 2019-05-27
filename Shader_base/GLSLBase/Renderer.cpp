@@ -1128,7 +1128,7 @@ void Renderer::VSSandbox()
 	
 
 	static float gTime = 0;
-	gTime += 0.0005f;
+	gTime += 0.005f;
 	GLuint uTime = glGetUniformLocation(shader, "u_Time");
 	glUniform1f(uTime, gTime);
 
@@ -1136,7 +1136,8 @@ void Renderer::VSSandbox()
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOGridMesh);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
 
-	glDrawArrays(GL_LINE_STRIP, 0, m_VBOGridMesh_Count);
+	//glDrawArrays(GL_LINE_STRIP, 0, m_VBOGridMesh_Count);
+	glDrawArrays(GL_TRIANGLES, 0, m_VBOGridMesh_Count);
 
 	glDisableVertexAttribArray(0);
 }
