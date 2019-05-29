@@ -22,16 +22,17 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	m_WindowSizeY = windowSizeY;
 
 	//Load shaders
-	//m_SolidRectShader = CompileShaders("./Shaders/SolidRect.vs", "./Shaders/SolidRect.fs");
-	//m_SimpleVelShader = CompileShaders("./Shaders/SimpleVel.vs", "./Shaders/SimpleVel.fs");
-	//m_SinTrailShader = CompileShaders("./Shaders/SinTrail.vs", "./Shaders/SinTrail.fs");
-	//m_FSSandboxShader = CompileShaders("./Shaders/FSSandbox.vs", "./Shaders/FSSandbox.fs");
-	//m_FillAllShader = CompileShaders("./Shaders/FillAll.vs", "./Shaders/FillAll.fs");
-	//m_TextureRectShader = CompileShaders("./Shaders/TextureRect.vs", "./Shaders/TextureRect.fs");
+	m_SolidRectShader = CompileShaders("./Shaders/SolidRect.vs", "./Shaders/SolidRect.fs");
+	m_SimpleVelShader = CompileShaders("./Shaders/SimpleVel.vs", "./Shaders/SimpleVel.fs");
+	m_SinTrailShader = CompileShaders("./Shaders/SinTrail.vs", "./Shaders/SinTrail.fs");
+	m_FSSandboxShader = CompileShaders("./Shaders/FSSandbox.vs", "./Shaders/FSSandbox.fs");
+	m_FillAllShader = CompileShaders("./Shaders/FillAll.vs", "./Shaders/FillAll.fs");
+	m_TextureRectShader = CompileShaders("./Shaders/TextureRect.vs", "./Shaders/TextureRect.fs");
 	m_MultiTextureShader = CompileShaders("./Shaders/MultiTexture.vs", "./Shaders/MultiTexture.fs");	
 	m_DrawNumberShader = CompileShaders("./Shaders/DrawNumber.vs", "./Shaders/DrawNumber.fs");
 	m_SpriteAnimShader = CompileShaders("./Shaders/SpriteAnim.vs", "./Shaders/SpriteAnim.fs");
 	m_VSSandboxShader = CompileShaders("./Shaders/VSSandbox.vs", "./Shaders/VSSandbox.fs");
+
 	//Load textures
 	m_NumberTexture = CreatePngTexture("./Textures/Numbers.png");
 	m_SpriteAnimTexture = CreatePngTexture("./Textures/sprite.png");
@@ -1123,21 +1124,26 @@ void Renderer::DrawSpriteSequence(GLuint number)
 
 void Renderer::VSSandbox()
 {
+	// Prepare points
+	GLfloat points[] = { 0 , 0, 0.5, 0.5, 0.3,0.3, -0.2, -0.2, -0.3,-0.3 };
+
 	GLuint shader = m_VSSandboxShader;
 	glUseProgram(shader);
 	
 
 	static float gTime = 0;
-	gTime += 0.005f;
+	gTime += 0.001f;
 	GLuint uTime = glGetUniformLocation(shader, "u_Time");
-	glUniform1f(uTime, gTime);
+	glUniform1f(uTime, gTime);	
+	GLuint uPoints = glGetUniformLocation(shader, "u_Points");
+	glUniform2fv(uPoints, 5, points);
 
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOGridMesh);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
 
-	//glDrawArrays(GL_LINE_STRIP, 0, m_VBOGridMesh_Count);
-	glDrawArrays(GL_TRIANGLES, 0, m_VBOGridMesh_Count);
+	glDrawArrays(GL_LINE_STRIP, 0, m_VBOGridMesh_Count);
+	//glDrawArrays(GL_TRIANGLES, 0, m_VBOGridMesh_Count);
 
 	glDisableVertexAttribArray(0);
 }
